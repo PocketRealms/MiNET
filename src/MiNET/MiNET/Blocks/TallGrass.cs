@@ -18,7 +18,7 @@ namespace MiNET.Blocks
 			IsTransparent = true;
 		}
 		
-		public override void GetDrops()
+		public override ItemStack GetDrops()
 		{
 			return null;
 		}
