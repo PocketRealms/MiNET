@@ -157,6 +157,7 @@
     <Compile Include="Effects\WaterBreathing.cs" />
     <Compile Include="Effects\Weakness.cs" />
     <Compile Include="Effects\Wither.cs" />
+    <Compile Include="Entities\Hologram.cs" />
     <Compile Include="Entities\Arrow.cs" />
     <Compile Include="Entities\Egg.cs" />
     <Compile Include="Entities\Entity.cs" />
