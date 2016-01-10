@@ -1,4 +1,5 @@
 using MiNET.Items;
+using MiNET.Utils;
 
 namespace MiNET.Blocks
 {
@@ -11,6 +12,11 @@ namespace MiNET.Blocks
 		public override Item GetSmelt()
 		{
 			return ItemFactory.GetItem(264, 0);
+		}
+		
+		public override ItemStack GetDrops()
+		{
+			return new ItemStack(264, 1);
 		}
 	}
 }
