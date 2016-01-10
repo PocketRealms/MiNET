@@ -230,7 +230,12 @@ namespace MiNET.Plugins
 				string commandText = message.Split(' ')[0];
 				message = message.Replace(commandText, "").Trim();
 				commandText = commandText.Replace("/", "").Replace(".", "");
-                                if (_pluginCommands.Values.Where(t => t.Command.Equals(commandText)).Count().Equals(0)) { player.SendMessage("Invalid Command"); return; }
+				
+                if (_pluginCommands.Values.Where(t => t.Command.Equals(commandText)).Count().Equals(0))
+			    { 
+				    player.SendMessage("§dP§7R§8> §bCommand not found. Use /help for commands");
+					return;
+				}
 				string[] arguments = message.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (var handlerEntry in _pluginCommands)
