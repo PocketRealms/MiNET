@@ -265,12 +265,12 @@ namespace MiNET
 				}
 				catch (Exception e)
 				{
-					Log.Warn(string.Format("Process message error from: {0}", senderEndpoint.Address), e);
+					//Log.Warn(string.Format("Process message error from: {0}", senderEndpoint.Address), e);
 				}
 			}
 			else
 			{
-				Log.Error("Unexpected end of transmission?");
+				//Log.Error("Unexpected end of transmission?");
 			}
 		}
 
@@ -304,7 +304,7 @@ namespace MiNET
 
 				if (player == null)
 				{
-					Log.ErrorFormat("Receive MCPE message 0x{1:x2} without player {0}. Session removed.", senderEndpoint.Address, msgId);
+					//Log.ErrorFormat("Receive MCPE message 0x{1:x2} without player {0}. Session removed.", senderEndpoint.Address, msgId);
 					_playerSessions.TryRemove(senderEndpoint, out playerSession);
 					//if (!_badPacketBans.ContainsKey(senderEndpoint.Address))
 					//{
@@ -416,7 +416,7 @@ namespace MiNET
 				if (message == null)
 				{
 					GreylistManager.Blacklist(senderEndpoint.Address);
-					Log.ErrorFormat("Receive bad packet with ID: {0} (0x{0:x2}) {2} from {1}", msgId, senderEndpoint.Address, (DefaultMessageIdTypes) msgId);
+					//Log.ErrorFormat("Receive bad packet with ID: {0} (0x{0:x2}) {2} from {1}", msgId, senderEndpoint.Address, (DefaultMessageIdTypes) msgId);
 
 					return;
 				}

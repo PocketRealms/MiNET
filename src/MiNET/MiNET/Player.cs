@@ -84,7 +84,7 @@ namespace MiNET
 		public User User { get; set; }
 		public Session Session { get; set; }
 
-		// HACK
+		//HACK
 		public int Kills { get; set; }
 		public int Deaths { get; set; }
 
@@ -258,12 +258,12 @@ namespace MiNET
 				long elapsedMilliseconds = message.Timer.ElapsedMilliseconds;
 				if (elapsedMilliseconds > 1000)
 				{
-					Log.WarnFormat("Package (0x{1:x2}) handling too long {0}ms for {2}", elapsedMilliseconds, message.Id, Username);
+					//Log.WarnFormat("Package (0x{1:x2}) handling too long {0}ms for {2}", elapsedMilliseconds, message.Id, Username);
 				}
 			}
 			else
 			{
-				Log.WarnFormat("Package (0x{0:x2}) timer not started for {1}.", message.Id, Username);
+				//Log.WarnFormat("Package (0x{0:x2}) timer not started for {1}.", message.Id, Username);
 			}
 		}
 
@@ -281,7 +281,7 @@ namespace MiNET
 		{
 			if (Level == null) return;
 
-			Log.DebugFormat("Action: {0}", message.actionId);
+			//Log.DebugFormat("Action: {0}", message.actionId);
 
 			McpeAnimate msg = McpeAnimate.CreateObject();
 			msg.entityId = EntityId;
@@ -371,10 +371,10 @@ namespace MiNET
 		/// <param name="message">The message.</param>
 		protected virtual void HandleEntityData(McpeTileEntityData message)
 		{
-			Log.DebugFormat("x:  {0}", message.x);
-			Log.DebugFormat("y:  {0}", message.y);
-			Log.DebugFormat("z:  {0}", message.z);
-			Log.DebugFormat("NBT {0}", message.namedtag.NbtFile);
+			//Log.DebugFormat("x:  {0}", message.x);
+			//Log.DebugFormat("y:  {0}", message.y);
+			//Log.DebugFormat("z:  {0}", message.z);
+			//Log.DebugFormat("NBT {0}", message.namedtag.NbtFile);
 
 			var blockEntity = Level.GetBlockEntity(new BlockCoordinates(message.x, message.y, message.z));
 
@@ -497,7 +497,7 @@ namespace MiNET
 			{
 				if (Username != null)
 				{
-					Log.InfoFormat("Player {0} doing multiple logins", Username);
+					//Log.InfoFormat("Player {0} doing multiple logins", Username);
 					return; // Already doing login
 				}
 
@@ -507,35 +507,27 @@ namespace MiNET
 			if (message.protocol < 38)
 			{
 				Server.GreylistManager.Greylist(EndPoint.Address, 30000);
-				Disconnect(string.Format("Wrong version ({0}) of Minecraft Pocket Edition, please upgrade.", message.protocol));
+				Disconnect("§cOh noes. I use 0.13.1 :(");
 				return;
 			}
 
-			//if (!message.username.Equals("gurun") && !message.username.Equals("TruDan") && !message.username.Equals("Morehs"))
+			//if (!message.username.Equals("Mack") && !message.username.Equals("TheDiamondYT7") && !message.username.Equals("FuryTacticz"))
 			//{
 			//	if (serverInfo.NumberOfPlayers > serverInfo.MaxNumberOfPlayers)
 			//	{
-			//		Disconnect("Too many players (" + serverInfo.NumberOfPlayers + ") at this time, please try again.");
+			//		Disconnect("§cServer full. §6Please try again later.");
 			//		return;
 			//	}
-
-			//	// Use for loadbalance only right now.
-			//	if (serverInfo.ConnectionsInConnectPhase > serverInfo.MaxNumberOfConcurrentConnects)
-			//	{
-			//		Disconnect("Too many concurrent logins (" + serverInfo.ConnectionsInConnectPhase + "), please try again.");
-			//		return;
-			//	}
-			//}
 
 			if (message.username == null || message.username.Trim().Length == 0 || !Regex.IsMatch(message.username, "^[A-Za-z0-9_-]{3,16}$"))
 			{
-				Disconnect("Invalid username.");
+				Disconnect("§cInvalid username");
 				return;
 			}
 
 			if (string.IsNullOrEmpty(message.skin.SkinType) || message.skin.Texture == null)
 			{
-				Disconnect("Invalid skin. Please upgrade your version of Minecraft Pocket Edition");
+				Disconnect("§cInvalid skin");
 				return;
 			}
 
@@ -593,7 +585,7 @@ namespace MiNET
 				}
 				if (Level == null)
 				{
-					Disconnect("No level assigned.");
+					Disconnect("§cNo level found");
 					return;
 				}
 
@@ -691,7 +683,7 @@ namespace MiNET
 
 			IsSpawned = true;
 
-			Log.InfoFormat("Respawn player {0} on level {1}", Username, Level.LevelId);
+			//Log.InfoFormat("Respawn player {0} on level {1}", Username, Level.LevelId);
 
 			SendSetTime();
 
@@ -776,7 +768,7 @@ namespace MiNET
 
 			Level.AddPlayer(this, true);
 
-			Log.InfoFormat("Respawn player {0} on level {1}", Username, Level.LevelId);
+			//Log.InfoFormat("Respawn player {0} on level {1}", Username, Level.LevelId);
 
 			SendSetTime();
 
@@ -904,11 +896,11 @@ namespace MiNET
 				Log.InfoFormat("Disconnected player {0}/{1} from level <{3}>, reason: {2}", Username, EndPoint.Address, reason, levelId);
 				if (!_haveJoined)
 				{
-					Log.WarnFormat("Disconnected crashed player {0}/{1} from level <{3}>, reason: {2}", Username, EndPoint.Address, reason, levelId);
+					//Log.WarnFormat("Disconnected crashed player {0}/{1} from level <{3}>, reason: {2}", Username, EndPoint.Address, reason, levelId);
 				}
 				else if (NetworkSession != null && NetworkSession.CreateTime.AddSeconds(10) > DateTime.UtcNow)
 				{
-					Log.WarnFormat("Early disconnect of player {0}/{1} from level <{3}> after less then 10s with reason: {2}", Username, EndPoint.Address, reason, levelId);
+					//Log.WarnFormat("Early disconnect of player {0}/{1} from level <{3}> after less then 10s with reason: {2}", Username, EndPoint.Address, reason, levelId);
 				}
 
 				//HACK: But needed
@@ -935,7 +927,7 @@ namespace MiNET
 		protected virtual void HandleMessage(McpeText message)
 		{
 			string text = message.message;
-			if (text.StartsWith("/") || text.StartsWith("."))
+			if (text.StartsWith("/"))
 			{
 				Server.PluginManager.HandleCommand(Server.UserManager, text, this);
 			}
@@ -1026,7 +1018,7 @@ namespace MiNET
 						{
 							if (_isKnownCheater == _cheatLimit)
 							{
-								Level.BroadcastMessage(string.Format("{0} is detected as flying {3:##.##}m/s {1:##.##}m {2}ms", Username, distanceTo, (int) ((double) td/TimeSpan.TicksPerMillisecond), verticalSpeed), type: MessageType.Raw);
+								//Level.BroadcastMessage(string.Format("{0} is detected as flying {3:##.##}m/s {1:##.##}m {2}ms", Username, distanceTo, (int) ((double) td/TimeSpan.TicksPerMillisecond), verticalSpeed), type: MessageType.Raw);
 								Log.WarnFormat("{0} is fly cheating {3:##.##}m/s {1:##.##}m {2}ms", Username, distanceTo, (int) ((double) td/TimeSpan.TicksPerMillisecond), verticalSpeed);
 							}
 							//AddPopup(new Popup
@@ -1070,7 +1062,7 @@ namespace MiNET
 			lock (Inventory)
 			{
 				_transaction = null;
-				Log.Info("Closed inventory crafing transaction");
+				//Log.Info("Closed inventory crafing transaction");
 				SendPlayerInventory();
 			}
 		}
@@ -1080,18 +1072,18 @@ namespace MiNET
 			lock (Inventory)
 			{
 				var stack = message.item.Value;
-				Log.Debug($"Player {Username} drops item with inv slot: {message.itemtype} and Item ID: {stack.Id} with count item count: {stack.Count}");
+				//Log.Debug($"Player {Username} drops item with inv slot: {message.itemtype} and Item ID: {stack.Id} with count item count: {stack.Count}");
 
 				if (_transaction == null && !Inventory.HasItem(message.item) || (_transaction != null && !_transaction.Equals(stack)))
 				{
-					Log.Error($"Player {Username} failed to drops item with inv slot: {message.itemtype}) and Item ID: {stack.Id} with count item count: {stack.Count}. Did not match current transaction state.");
+					//Log.Error($"Player {Username} failed to drops item with inv slot: {message.itemtype}) and Item ID: {stack.Id} with count item count: {stack.Count}. Did not match current transaction state.");
 					return;
 				}
 
 				// Clear current inventory slot.
 				if (_transaction != null)
 				{
-					Log.Info("Closed inventory transaction via drop item");
+					//Log.Info("Closed inventory transaction via drop item");
 					_transaction = null;
 
 					var itemEntity = new ItemEntity(Level, stack.Item)
@@ -1110,7 +1102,7 @@ namespace MiNET
 				}
 				else
 				{
-					Log.Info("Begin drop transaction on quick drop item");
+					//Log.Info("Begin drop transaction on quick drop item");
 					_dropTransaction = stack;
 				}
 			}
@@ -1131,12 +1123,12 @@ namespace MiNET
 				{
 					if (GameMode != GameMode.Creative)
 					{
-						Log.Error($"Player {Username} set equiptment fails with inv slot: {selectedInventorySlot}({message.slot}) and hotbar slot {selectedHotbarSlot} for inventory size: {Inventory.Slots.Count} and Item ID: {message.item?.Value?.Id}");
+						//Log.Error($"Player {Username} set equiptment fails with inv slot: {selectedInventorySlot}({message.slot}) and hotbar slot {selectedHotbarSlot} for inventory size: {Inventory.Slots.Count} and Item ID: {message.item?.Value?.Id}");
 					}
 					return;
 				}
 
-				Log.Info($"Player {Username} set equiptment with inv slot: {selectedInventorySlot}({message.slot}) and hotbar slot {selectedHotbarSlot}");
+				//Log.Info($"Player {Username} set equiptment with inv slot: {selectedInventorySlot}({message.slot}) and hotbar slot {selectedHotbarSlot}");
 
 				//ItemStack itemStack = message.slot != 255 ? Inventory.Slots[selectedInventorySlot] : message.item.Value;
 				//if (itemStack != null)
