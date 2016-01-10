@@ -1,2 +1,2 @@
-##MiNET
-###This is a fork of [MiNET](Https://GitHub.com/NiclasOlofsson/MiNET), edited for the MCPE server Pocket Realms.
+##MiNET [![Build status](https://ci.appveyor.com/api/projects/status/tpajvnb5umpj5uu8?svg=true)](https://ci.appveyor.com/project/RandomAltThingy/minet)
+####This is a fork of [MiNET](Https://GitHub.com/NiclasOlofsson/MiNET), edited for the MCPE server Pocket Realms.
