@@ -248,12 +248,17 @@ namespace MiNET.Plugins
 						var userIdentity = userManager.CreateIdentity(user, "none");
 						if (!authorizationAttribute.OnAuthorization(new GenericPrincipal(userIdentity, new string[0])))
 						{
-							player.SendMessage("You are not permitted to use this command!");
+							player.SendMessage("§dP§7§8> §cYou don't have permission");
 							return;
 						}
 					}
 
 					if (ExecuteCommand(method, player, arguments)) return;
+					if (!ExecuteCommand(method, player, arguments)
+					{
+					   player.SendMessage("§cUnknown command.");
+					   return;
+					}
 				}
 			}
 			catch (Exception ex)

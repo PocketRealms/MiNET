@@ -270,7 +270,7 @@ namespace MiNET
 		protected virtual void HandleNewIncomingConnection(NewIncomingConnection message)
 		{
 			NetworkSession.State = ConnectionState.Connected;
-			Log.DebugFormat("New incoming connection from {0} {1}", EndPoint.Address, message.port);
+			//Log.DebugFormat("New incoming connection from {0} {1}", EndPoint.Address, message.port);
 		}
 
 		/// <summary>
@@ -440,7 +440,7 @@ namespace MiNET
 		/// </summary>
 		public virtual void HandleDisconnectionNotification()
 		{
-			Disconnect("Client requested disconnected", false);
+			Disconnect("Client disconnected", false);
 		}
 
 		/// <summary>
@@ -449,7 +449,7 @@ namespace MiNET
 		/// <param name="message">The message.</param>
 		protected virtual void HandleConnectionRequest(ConnectionRequest message)
 		{
-			Log.DebugFormat("Connection request from: {0}", EndPoint.Address);
+			//Log.DebugFormat("Connection request from: {0}", EndPoint.Address);
 
 			ClientGuid = message.clientGuid;
 
@@ -641,7 +641,7 @@ namespace MiNET
 			ThreadPool.QueueUserWorkItem(delegate(object state) { SendChunksForKnownPosition(); });
 
 			LastUpdatedTime = DateTime.UtcNow;
-			Log.InfoFormat("Login complete by: {0} from {2} in {1}ms", Username, watch.ElapsedMilliseconds, EndPoint);
+			Log.InfoFormat("{0} connected [{1}]", Username, EndPoint);
 		}
 
 		public virtual void InitializePlayer()
@@ -892,8 +892,7 @@ namespace MiNET
 					playerSession.Player = null;
 				}
 
-				string levelId = Level == null ? "Unknown" : Level.LevelId;
-				Log.InfoFormat("Disconnected player {0}/{1} from level <{3}>, reason: {2}", Username, EndPoint.Address, reason, levelId);
+				Log.InfoFormat("{0} disconnected with reason: {1}", Username, reason);
 				if (!_haveJoined)
 				{
 					//Log.WarnFormat("Disconnected crashed player {0}/{1} from level <{3}>, reason: {2}", Username, EndPoint.Address, reason, levelId);
@@ -1019,7 +1018,7 @@ namespace MiNET
 							if (_isKnownCheater == _cheatLimit)
 							{
 								//Level.BroadcastMessage(string.Format("{0} is detected as flying {3:##.##}m/s {1:##.##}m {2}ms", Username, distanceTo, (int) ((double) td/TimeSpan.TicksPerMillisecond), verticalSpeed), type: MessageType.Raw);
-								Log.WarnFormat("{0} is fly cheating {3:##.##}m/s {1:##.##}m {2}ms", Username, distanceTo, (int) ((double) td/TimeSpan.TicksPerMillisecond), verticalSpeed);
+								//Log.WarnFormat("{0} is fly cheating {3:##.##}m/s {1:##.##}m {2}ms", Username, distanceTo, (int) ((double) td/TimeSpan.TicksPerMillisecond), verticalSpeed);
 							}
 							//AddPopup(new Popup
 							//{
@@ -1269,7 +1268,7 @@ namespace MiNET
 				if (HealthManager.IsDead) return;
 
 				ItemStack itemStack = message.item.Value;
-				Log.Info($"Player {Username} set inventory item on window 0x{message.windowId:X2} with slot: {message.slot} HOTBAR: {message.unknown} Item ID: {itemStack.Id} Item Count: {itemStack.Count} Meta: {itemStack.Metadata}: DatagramSequenceNumber: {message.DatagramSequenceNumber}, ReliableMessageNumber: {message.ReliableMessageNumber}, OrderingIndex: {message.OrderingIndex}");
+				//Log.Info($"Player {Username} set inventory item on window 0x{message.windowId:X2} with slot: {message.slot} HOTBAR: {message.unknown} Item ID: {itemStack.Id} Item Count: {itemStack.Count} Meta: {itemStack.Metadata}: DatagramSequenceNumber: {message.DatagramSequenceNumber}, ReliableMessageNumber: {message.ReliableMessageNumber}, OrderingIndex: {message.OrderingIndex}");
 
 				// on all set container content, check if we have active inventory
 				// and update that inventory.
@@ -1339,13 +1338,13 @@ namespace MiNET
 
 								itemEntity.SpawnEntity();
 
-								Log.Info("Close drop transaction.");
+								//Log.Info("Close drop transaction.");
 								_transaction = null;
 								_dropTransaction = null;
 							}
 							else
 							{
-								Log.Error($"Lagging: {isLagging}. Abort inventory drop transaction. Failed item match for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
+								//Log.Error($"Lagging: {isLagging}. Abort inventory drop transaction. Failed item match for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}")-
 								_transaction = null;
 								_dropTransaction = null;
 								SendPlayerInventory();
@@ -1359,7 +1358,7 @@ namespace MiNET
 						{
 							_isInArmorWorkaround = -1;
 
-							Log.Info("Start inventory transaction");
+							//Log.Info("Start inventory transaction");
 
 							_transaction = Inventory.Slots[message.slot];
 
@@ -1367,7 +1366,7 @@ namespace MiNET
 							{
 								_transaction.Item.Metadata = itemStack.Metadata;
 								_transaction = null;
-								Log.Info("Closed inventory confirm only transaction");
+								//Log.Info("Closed inventory confirm only transaction");
 
 								return;
 							}
@@ -1376,14 +1375,14 @@ namespace MiNET
 							{
 								_transaction.Item.Metadata = itemStack.Metadata;
 								_transaction = null;
-								Log.Info("Closed inventory metadata only transaction");
+								//Log.Info("Closed inventory metadata only transaction");
 
 								return;
 							}
 
 							if (itemStack.Id == _transaction.Id && itemStack.Count != _transaction.Count && itemStack.Metadata == _transaction.Metadata)
 							{
-								Log.Info("Partial stack begin transaction");
+								//Log.Info("Partial stack begin transaction");
 
 								byte delta = (byte) (_transaction.Count - itemStack.Count);
 								if (delta > 0)
@@ -1397,7 +1396,7 @@ namespace MiNET
 
 							if (itemStack.Id == 0)
 							{
-								Log.Info($"Full stack begin transaction. Existing id: {_transaction.Id}, meta: {_transaction.Metadata}, count: {_transaction.Count}");
+								//Log.Info($"Full stack begin transaction. Existing id: {_transaction.Id}, meta: {_transaction.Metadata}, count: {_transaction.Count}");
 								Inventory.Slots[message.slot] = new ItemStack();
 							}
 							else
@@ -1409,7 +1408,7 @@ namespace MiNET
 								}
 								else
 								{
-									Log.Error($"Lagging: {isLagging}. Abort (hack?) inventory transaction for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
+									//Log.Error($"Lagging: {isLagging}. Abort (hack?) inventory transaction for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
 									_transaction = null;
 									SendPlayerInventory();
 								}
@@ -1421,7 +1420,7 @@ namespace MiNET
 						{
 							if (_isInArmorWorkaround >= 0)
 							{
-								Log.Error($"Lagging: {isLagging}. Abort (hack?) inventory/armor transaction for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
+								//Log.Error($"Lagging: {isLagging}. Abort (hack?) inventory/armor transaction for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
 								Inventory.Slots[_isInArmorWorkaround] = new ItemStack();
 								_transaction = null;
 								_isInArmorWorkaround = -1;
@@ -1434,7 +1433,7 @@ namespace MiNET
 								if (Inventory.Slots[message.slot].Id != 0
 								    && (itemStack.Id != Inventory.Slots[message.slot].Id || itemStack.Metadata != Inventory.Slots[message.slot].Metadata))
 								{
-									Log.Info("Partial inventory transaction, change transaction item");
+									//Log.Info("Partial inventory transaction, change transaction item");
 									_transaction = Inventory.Slots[message.slot];
 									Inventory.Slots[message.slot] = itemStack;
 								}
@@ -1446,20 +1445,20 @@ namespace MiNET
 									{
 										Inventory.Slots[message.slot] = new ItemStack(_transaction.Id, itemStack.Count, _transaction.Metadata);
 										_transaction.Count -= (byte) (itemStack.Count - existing);
-										Log.Info("Partial inventory transaction. Left in transaction: " + _transaction.Count);
+										//Log.Info("Partial inventory transaction. Left in transaction: " + _transaction.Count);
 									}
 									else
 									{
 										_transaction.Count += existing;
 										Inventory.Slots[message.slot] = _transaction;
 										_transaction = null;
-										Log.Info("Close inventory transaction");
+										//Log.Info("Close inventory transaction");
 									}
 								}
 							}
 							else
 							{
-								Log.Info("Partial inventory transaction, clear slot");
+								//Log.Info("Partial inventory transaction, clear slot");
 								Inventory.Slots[message.slot] = new ItemStack();
 							}
 
@@ -1500,12 +1499,12 @@ namespace MiNET
 							{
 								_isInArmorWorkaround = -1;
 								_transaction = null;
-								Log.Info("Close armor transaction");
+								//Log.Info("Close armor transaction");
 							}
 							else
 							{
 								_transaction = new ItemStack(currentArmorItem, 1);
-								Log.Info("Partial armor transaction");
+								//Log.Info("Partial armor transaction");
 							}
 
 
@@ -1540,14 +1539,14 @@ namespace MiNET
 
 							if (!isVerifyOnly)
 							{
-								Log.Error($"Lagging: {isLagging}. Armor transaction failed (hack?) for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
+								//Log.Error($"Lagging: {isLagging}. Armor transaction failed (hack?) for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
 								_transaction = null;
 								SendPlayerInventory();
 							}
 						}
 						else
 						{
-							Log.Error($"Lagging: {isLagging}. Armor transaction failed (unknown reason?) for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
+							//Log.Error($"Lagging: {isLagging}. Armor transaction failed (unknown reason?) for {Username} . Incoming item id: {itemStack.Id}, meta: {itemStack.Metadata}, count: {itemStack.Count}");
 							_transaction = null;
 							SendPlayerInventory();
 						}
@@ -1721,8 +1720,8 @@ namespace MiNET
 
 		private void HandleEntityEvent(McpeEntityEvent message)
 		{
-			Log.Debug("Entity Id:" + message.entityId);
-			Log.Debug("Entity Event:" + message.eventId);
+			//Log.Debug("Entity Id:" + message.entityId);
+			//Log.Debug("Entity Event:" + message.eventId);
 
 			//if (message.eventId != 0) return; // Should probably broadcast?!
 
@@ -2207,7 +2206,6 @@ namespace MiNET
 		{
 			string deathMessage = string.Format(HealthManager.GetDescription(lastDamageCause), Username, player == null ? "" : player.Username);
 			Level.BroadcastMessage(deathMessage, type: McpeText.TypeRaw);
-			Log.Debug(deathMessage);
 		}
 
 		public void DetectLostConnection()
