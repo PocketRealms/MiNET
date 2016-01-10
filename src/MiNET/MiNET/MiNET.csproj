@@ -222,6 +222,7 @@
     <Compile Include="Items\ItemIronShovel.cs" />
     <Compile Include="Items\ItemIronSword.cs" />
     <Compile Include="Items\ItemMelonSlice.cs" />
+    <Compile Include="Items\ItemNotchApple.cs" />
     <Compile Include="Items\ItemPotato.cs" />
     <Compile Include="Items\ItemPumpkinPie.cs" />
     <Compile Include="Items\ItemSign.cs" />
