@@ -370,7 +370,7 @@ namespace MiNET
 				}
 				else if (!header.isValid)
 				{
-					Log.Warn("!!!! ERROR, Invalid header !!!!!");
+					//Log.Warn("!!!! ERROR, Invalid header !!!!!");
 				}
 			}
 		}
@@ -443,7 +443,7 @@ namespace MiNET
 					}
 					default:
 						GreylistManager.Blacklist(senderEndpoint.Address);
-						Log.ErrorFormat("Receive unexpected packet with ID: {0} (0x{0:x2}) {2} from {1}", msgId, senderEndpoint.Address, (DefaultMessageIdTypes) msgId);
+						//Log.ErrorFormat("Receive unexpected packet with ID: {0} (0x{0:x2}) {2} from {1}", msgId, senderEndpoint.Address, (DefaultMessageIdTypes) msgId);
 						break;
 				}
 			}
@@ -516,7 +516,7 @@ namespace MiNET
 				DateTime trash;
 				if (!_connectionAttemps.TryRemove(senderEndpoint, out trash))
 				{
-					Log.WarnFormat("Unexpected connection request packet from {0}. Probably a resend.", senderEndpoint.Address);
+					//Log.WarnFormat("Unexpected connection request packet from {0}. Probably a resend.", senderEndpoint.Address);
 					return;
 				}
 
@@ -528,12 +528,12 @@ namespace MiNET
 						return;
 					}
 
-					Log.InfoFormat("Unexpected session from {0}. Removing old session and disconnecting old player.", senderEndpoint.Address);
+					//Log.InfoFormat("Unexpected session from {0}. Removing old session and disconnecting old player.", senderEndpoint.Address);
 
 					Player oldPlayer = session.Player;
 					if (oldPlayer != null)
 					{
-						oldPlayer.Disconnect("Reconnecting.", false);
+						oldPlayer.Disconnect("Reconnecting...", false);
 					}
 
 					_playerSessions.TryRemove(session.EndPoint, out session);
@@ -624,7 +624,7 @@ namespace MiNET
 
 			if (!haveEmpty)
 			{
-				Log.DebugFormat("Got all {0} split packages for split ID: {1}", spCount, spId);
+				//Log.DebugFormat("Got all {0} split packages for split ID: {1}", spCount, spId);
 
 				SplitPartPackage[] waste;
 				playerSession.Splits.TryRemove(spId, out waste);
@@ -636,7 +636,7 @@ namespace MiNET
 					byte[] buf = splitPartPackage.Message;
 					if (buf == null)
 					{
-						Log.Error("Expected bytes in splitpart, but got none");
+						//Log.Error("Expected bytes in splitpart, but got none");
 						continue;
 					}
 
@@ -804,7 +804,7 @@ namespace MiNET
 					else
 					{
 						if (Log.IsDebugEnabled)
-							Log.WarnFormat("NAK, no datagram #{0} to resend for {1}", i, player.Username);
+							//Log.WarnFormat("NAK, no datagram #{0} to resend for {1}", i, player.Username);
 					}
 				}
 			}
@@ -855,7 +855,7 @@ namespace MiNET
 					else
 					{
 						if (Log.IsDebugEnabled)
-							Log.WarnFormat("ACK, Failed to remove datagram #{0} for {2}. Queue size={1}", i, queue.Count, player.Username);
+							//Log.WarnFormat("ACK, Failed to remove datagram #{0} for {2}. Queue size={1}", i, queue.Count, player.Username);
 					}
 				}
 			}
